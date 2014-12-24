@@ -39,7 +39,11 @@
 
 (eval-after-load 'ghc
   '(progn
-     (add-hook 'haskell-mode-hook (lambda () (ghc-init)))))
+     (setq ghc-display-error 'minibuffer)
+     (add-hook 'haskell-mode-hook (lambda ()
+                                    (ghc-init)
+                                    (ghc-debug)
+                                    ))))
 
 (eval-after-load 'haskell-mode
   '(progn
@@ -80,10 +84,10 @@
        (define-key haskell-mode-map (kbd "C-<left>") 'haskell-move-left)
        (define-key haskell-mode-map (kbd "<space>") 'haskell-mode-contextual-space))
 
-     (setq haskell-process-path-ghci "ghci-ng")
-     (setq haskell-process-args-ghci '("-ferror-spans"))
-     (setq haskell-process-args-cabal-repl
-           '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
+;;     (setq haskell-process-path-ghci "ghci-ng")
+;;     (setq haskell-process-args-ghci '("-ferror-spans"))
+;;     (setq haskell-process-args-cabal-repl
+;;           '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
      (setq prelude-haskell-mode-hook 'prelude-haskell-mode-defaults)
      (setq haskell-process-generate-tags nil)
 
