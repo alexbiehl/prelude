@@ -61,6 +61,10 @@ Windows external keyboard from time to time."
       (setq mac-option-modifier 'meta)
       (message "Command is now bound to SUPER and Option is bound to META."))))
 
+(setq mac-option-modifier nil
+      mac-command-modifier 'meta
+      x-select-enable-clipboard t)
+
 (define-key prelude-mode-map (kbd "C-c w") 'prelude-swap-meta-and-super)
 (define-key prelude-mode-map (kbd "s-/") 'hippie-expand)
 
