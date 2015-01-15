@@ -35,15 +35,28 @@
 ;;; Code:
 
 (require 'prelude-programming)
+(require 'prelude-company)
+
 (prelude-require-packages '(cl-lib ghc company-ghc haskell-mode))
 
-(eval-after-load 'ghc
-  '(progn
-     (setq ghc-display-error 'minibuffer)
-     (add-hook 'haskell-mode-hook (lambda ()
-                                    (ghc-init)
-                                    (ghc-debug)
-                                    ))))
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook #'ghc-comp-init)
+
+(eval-after-load 'company-ghc
+ '(progn
+    (add-to-list 'company-backends 'company-ghc)
+    ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (eval-after-load 'ghc                           ;;
+;;   '(progn                                       ;;
+;;      (setq ghc-display-error 'minibuffer)       ;;
+;;      (add-hook 'haskell-mode-hook (lambda ()    ;;
+;;                                     (ghc-init)  ;;
+;;                                     (ghc-debug) ;;
+;;                                     ))))        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (eval-after-load 'haskell-mode
   '(progn
