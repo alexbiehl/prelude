@@ -37,75 +37,63 @@
 (require 'prelude-programming)
 (require 'prelude-company)
 
-(prelude-require-packages '(cl-lib ghc company-ghc haskell-mode))
+(prelude-require-packages '(cl-lib ghc company-ghc hi2 haskell-mode))
 
-(autoload 'ghc-init "ghc" nil t)
-(autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook #'ghc-comp-init)
+(load-file (concat prelude-personal-dir "/haskell-flycheck.el"))
 
-(eval-after-load 'company-ghc
- '(progn
-    (add-to-list 'company-backends 'company-ghc)
-    ))
+(add-to-list 'company-backends 'company-ghc)
+(setq prelude-haskell-mode-hook 'prelude-haskell-mode-defaults)
+(setq haskell-process-generate-tags nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (eval-after-load 'ghc                           ;;
-;;   '(progn                                       ;;
-;;      (setq ghc-display-error 'minibuffer)       ;;
-;;      (add-hook 'haskell-mode-hook (lambda ()    ;;
-;;                                     (ghc-init)  ;;
-;;                                     (ghc-debug) ;;
-;;                                     ))))        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
+(add-hook 'haskell-mode-hook 'ghc-init)
+(add-hook 'haskell-mode-hook 'ghc-comp-init)
+(add-hook 'haskell-mode-hook 'turn-on-hi2)
+(add-hook 'haskell-mode-hook (lambda ()
+                               (run-hooks 'prelude-haskell-mode-hook)))
 
-(eval-after-load 'haskell-mode
-  '(progn
-     (defun prelude-haskell-mode-defaults ()
-       (subword-mode +1)
-       (turn-on-haskell-doc-mode)
-       (turn-on-haskell-indentation)
-       (interactive-haskell-mode +1)
+(defun prelude-haskell-mode-defaults ()
+  (subword-mode +1)
+  (turn-on-haskell-doc-mode)
+  (turn-on-haskell-indentation)
+  (interactive-haskell-mode +1)
 
-       (define-key haskell-cabal-mode-map (kbd "C-`") 'haskell-interactive-bring)
-       (define-key haskell-cabal-mode-map [?\C-c ?\C-z] 'haskell-interactive-switch)
-       (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-       (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)
-       (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-`") 'haskell-interactive-bring)
+  (define-key haskell-cabal-mode-map [?\C-c ?\C-z] 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
 
-       (define-key interactive-haskell-mode-map [f5] 'haskell-process-load-or-reload)
-       (define-key interactive-haskell-mode-map [f12] 'turbo-devel-reload)
-       (define-key interactive-haskell-mode-map [f12] 'haskell-process-cabal-build-and-restart)
-       (define-key interactive-haskell-mode-map (kbd "M-,") 'haskell-who-calls)
-       (define-key interactive-haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
-       (define-key interactive-haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-       (define-key interactive-haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-       (define-key interactive-haskell-mode-map (kbd "C-c c") 'haskell-process-cabal)
-       (define-key interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
-       (define-key interactive-haskell-mode-map (kbd "C-?") 'haskell-mode-find-uses)
-       (define-key interactive-haskell-mode-map (kbd "C-c C-t") 'haskell-mode-show-type-at)
+  (define-key interactive-haskell-mode-map [f5] 'haskell-process-load-or-reload)
+  (define-key interactive-haskell-mode-map [f12] 'turbo-devel-reload)
+  (define-key interactive-haskell-mode-map [f12] 'haskell-process-cabal-build-and-restart)
+  (define-key interactive-haskell-mode-map (kbd "M-,") 'haskell-who-calls)
+  (define-key interactive-haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
+  (define-key interactive-haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key interactive-haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key interactive-haskell-mode-map (kbd "C-c c") 'haskell-process-cabal)
+  (define-key interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
+  (define-key interactive-haskell-mode-map (kbd "C-?") 'haskell-mode-find-uses)
+  (define-key interactive-haskell-mode-map (kbd "C-c C-t") 'haskell-mode-show-type-at)
 
-       (define-key haskell-interactive-mode-map (kbd "C-c C-v") 'haskell-interactive-toggle-print-mode)
-       (define-key haskell-interactive-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
-       (define-key haskell-interactive-mode-map [f9] 'haskell-interactive-mode-visit-error)
-       (define-key haskell-interactive-mode-map [f11] 'haskell-process-cabal-build)
-       (define-key haskell-interactive-mode-map [f12] 'haskell-process-cabal-build-and-restart)
-       (define-key haskell-interactive-mode-map (kbd "C-<left>") 'haskell-interactive-mode-error-backward)
-       (define-key haskell-interactive-mode-map (kbd "C-<right>") 'haskell-interactive-mode-error-forward)
-       (define-key haskell-interactive-mode-map (kbd "C-c c") 'haskell-process-cabal)
+  (define-key haskell-interactive-mode-map (kbd "C-c C-v") 'haskell-interactive-toggle-print-mode)
+  (define-key haskell-interactive-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+  (define-key haskell-interactive-mode-map [f9] 'haskell-interactive-mode-visit-error)
+  (define-key haskell-interactive-mode-map [f11] 'haskell-process-cabal-build)
+  (define-key haskell-interactive-mode-map [f12] 'haskell-process-cabal-build-and-restart)
+  (define-key haskell-interactive-mode-map (kbd "C-<left>") 'haskell-interactive-mode-error-backward)
+  (define-key haskell-interactive-mode-map (kbd "C-<right>") 'haskell-interactive-mode-error-forward)
+  (define-key haskell-interactive-mode-map (kbd "C-c c") 'haskell-process-cabal)
 
-       (define-key haskell-mode-map (kbd "C-<right>") 'haskell-move-right)
-       (define-key haskell-mode-map (kbd "C-<left>") 'haskell-move-left)
-       (define-key haskell-mode-map (kbd "<space>") 'haskell-mode-contextual-space))
+  (define-key haskell-mode-map (kbd "C-<right>") 'haskell-move-right)
+  (define-key haskell-mode-map (kbd "C-<left>") 'haskell-move-left)
+  (define-key haskell-mode-map (kbd "<space>") 'haskell-mode-contextual-space))
 
 ;;     (setq haskell-process-path-ghci "ghci-ng")
 ;;     (setq haskell-process-args-ghci '("-ferror-spans"))
 ;;     (setq haskell-process-args-cabal-repl
 ;;           '("--ghc-option=-ferror-spans" "--with-ghc=ghci-ng"))
-     (setq prelude-haskell-mode-hook 'prelude-haskell-mode-defaults)
-     (setq haskell-process-generate-tags nil)
 
-     (add-hook 'haskell-mode-hook (lambda ()
-                                    (run-hooks 'prelude-haskell-mode-hook)))))
 
 (provide 'prelude-haskell)
 
