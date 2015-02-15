@@ -357,11 +357,12 @@ Repeated invocations toggle between the two most recently open buffers."
   "Kill all buffers but the current one.
 Doesn't mess with special buffers."
   (interactive)
-  (-each
-   (->> (buffer-list)
-     (-filter #'buffer-file-name)
-     (--remove (eql (current-buffer) it)))
-   #'kill-buffer))
+  (when (y-or-n-p "Are you sure you want to kill all buffers but the current one? ")
+    (-each
+        (->> (buffer-list)
+             (-filter #'buffer-file-name)
+             (--remove (eql (current-buffer) it)))
+      #'kill-buffer)))
 
 (defun prelude-create-scratch-buffer ()
   "Create a new scratch buffer."
@@ -476,6 +477,9 @@ With a prefix argument ARG, find the `user-init-file' instead."
   `(lambda (&optional arg)
      (interactive "P")
      (sp-wrap-with-pair ,s)))
+
+;; needed for prelude-goto-symbol
+(require 'imenu)
 
 (defun prelude-goto-symbol (&optional symbol-list)
   "Refresh imenu and jump to a place in the buffer using Ido."
