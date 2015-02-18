@@ -52,7 +52,6 @@
     diff-hl
     diminish
     easy-kill
-    elisp-slime-nav
     epl
     expand-region
     flycheck
@@ -68,12 +67,12 @@
     magit
     move-text
     operate-on-number
-    rainbow-mode
     smartparens
     smartrep
     undo-tree
     volatile-highlights
-    zenburn-theme)
+    zenburn-theme
+    zop-to-char)
   "A list of packages to ensure are installed at launch.")
 
 (defun prelude-packages-installed-p ()
@@ -153,6 +152,9 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
     ("\\.pp\\'" puppet-mode puppet-mode)
     ("\\.php\\'" php-mode php-mode)
     ("\\.proto\\'" protobuf-mode protobuf-mode)
+    ("\\.pyd\\'" cython-mode cython-mode)
+    ("\\.pyi\\'" cython-mode cython-mode)
+    ("\\.pyx\\'" cython-mode cython-mode)
     ("PKGBUILD\\'" pkgbuild-mode pkgbuild-mode)
     ("\\.rs\\'" rust-mode rust-mode)
     ("\\.sass\\'" sass-mode sass-mode)
@@ -169,8 +171,8 @@ PACKAGE is installed only if not already present.  The file is opened in MODE."
 ;; markdown-mode doesn't have autoloads for the auto-mode-alist
 ;; so we add them manually if it's already installed
 (when (package-installed-p 'markdown-mode)
-  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
+  (add-to-list 'auto-mode-alist '("\\.markdown\\'" . gfm-mode))
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)))
 
 (when (package-installed-p 'pkgbuild-mode)
   (add-to-list 'auto-mode-alist '("PKGBUILD\\'" . pkgbuild-mode)))
